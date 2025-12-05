@@ -102,92 +102,100 @@ const UpdateBook = () => {
     };
 
     return (
-        <div className="p-14">
-            <h1 className="text-2xl font-bold text-center mb-6">Update Book Details</h1>
-            {!selectedBook ? (<>
-            <SearchBar onSearch={handleSearch} selectedItem={selectedBook} placeholder="Search Books..." />
-            <ItemList items={books} onSelectItem={handleSelectBook} itemType="book" isVisible={showBookList} />
-            </>): (
-                <>
-            <form onSubmit={handleSubmit} className='w-screen max-w-md'>
-                <div className="bg-gray-700 rounded-lg p-4 mb-2">
-                    <div className="mb-4">
-                        <label htmlFor="title" className="block">Book Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            id="title"
-                            placeholder="Book Title"
-                            required
-                            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
-                            value={formData.title}
-                            onChange={handleChange}
-                        />
+        <div className="p-8 flex justify-center">
+            <div className='w-full max-w-xl'>
+                <h1 className="text-2xl font-bold text-center mb-6 text-gray-100">Update Book</h1>
+                {!selectedBook ? (<>
+                <SearchBar onSearch={handleSearch} selectedItem={selectedBook} placeholder="Search Books..." />
+                <ItemList items={books} onSelectItem={handleSelectBook} itemType="book" isVisible={showBookList} />
+                </>) : (
+                    <>
+                <form onSubmit={handleSubmit} className='w-full'>
+                    <div className="bg-gray-800 rounded-xl p-6 mb-4 shadow-md ring-1 ring-gray-700">
+                        <div className='grid grid-cols-1 gap-4'>
+                            <div>
+                                <label htmlFor="title" className="block text-sm font-semibold text-gray-200 mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    placeholder="Book Title"
+                                    required
+                                    className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700"
+                                    value={formData.title}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="authorName" className="block text-sm font-semibold text-gray-200 mb-1">Author</label>
+                                <input
+                                    type="text"
+                                    name="authorName"
+                                    id="authorName"
+                                    placeholder="Author Name"
+                                    required
+                                    className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700"
+                                    value={formData.authorName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className='md:grid md:grid-cols-2 md:gap-4'>
+                                <div>
+                                    <label htmlFor="category" className="block text-sm font-semibold text-gray-200 mb-1">Category</label>
+                                    <input
+                                        type="text"
+                                        name="category"
+                                        id="category"
+                                        placeholder="Category"
+                                        className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700"
+                                        value={formData.category}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="price" className="block text-sm font-semibold text-gray-200 mb-1">Price</label>
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        id="price"
+                                        placeholder="Price"
+                                        required
+                                        className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700"
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="imageUrl" className="block text-sm font-semibold text-gray-200 mb-1">Image URL</label>
+                                <input
+                                    type="text"
+                                    name="imageUrl"
+                                    id="imageUrl"
+                                    placeholder="https://example.com/image.jpg"
+                                    className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700"
+                                    value={formData.imageUrl}
+                                    onChange={handleChange}
+                                />
+                                {formData.imageUrl && (
+                                    <div className='mt-3 flex justify-center'>
+                                        <img src={formData.imageUrl} alt="Preview" className='w-36 h-48 object-cover rounded-md shadow-inner border border-gray-700' />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="authorName" className="block">Author Name</label>
-                        <input
-                            type="text"
-                            name="authorName"
-                            id="authorName"
-                            placeholder="Author Name"
-                            required
-                            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
-                            value={formData.authorName}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="category" className="block">Category</label>
-                        <input
-                            type="text"
-                            name="category"
-                            id="category"
-                            placeholder="Category"
-                            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
-                            value={formData.category}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="price" className="block">Price</label>
-                        <input
-                            type="number"
-                            name="price"
-                            id="price"
-                            placeholder="Price"
-                            required
-                            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
-                            value={formData.price}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="imageUrl" className="block">Image URL</label>
-                        <input
-                            type="text"
-                            name="imageUrl"
-                            id="imageUrl"
-                            placeholder="https://example.com/image.jpg"
-                            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
-                            value={formData.imageUrl}
-                            onChange={handleChange}
-                        />
-                        {formData.imageUrl && (
-                            <img src={formData.imageUrl} alt="Preview" className='mt-2 w-32 h-40 object-cover rounded' />
-                        )}
-                    </div>
+                    <button type="submit" className="w-full py-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition">
+                        Update Book
+                    </button>
+                </form>
+                <div className="mt-3">
+                    <button onClick={handleReset} className="w-full bg-red-700 text-white py-3 rounded-md mt-3 hover:bg-red-600 transition">
+                        Cancel
+                    </button>
                 </div>
-                <button type="submit" className="bg-blue-700 text-white py-4 w-full rounded font-semibold hover:bg-blue-600 focus:ring-4 focus:ring-blue-500">
-                    Update Book
-                </button>
-            </form>
-            <div className="mt-2">
-                <button onClick={handleReset} className="bg-red-100 text-red-500 py-4 mb-4 w-full rounded font-semibold hover:bg-red-200 ring-4 ring-red-300 focus:ring-4 focus:ring-red-500 focus:cursor-alias">
-                    Cancel
-                </button>
-                </div>
-            </>) }
+                </>) }
+            </div>
         </div>
     );
 };

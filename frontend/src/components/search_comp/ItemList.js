@@ -7,30 +7,30 @@ const ItemList = ({ items, onSelectItem, itemType, isVisible }) => {
         {items.map((item) => (
           <div
             key={item._id}
-            className="bg-gray-700 p-2 rounded-lg mb-2 w-screen max-w-22 cursor-pointer text-gray-400 hover:bg-opacity-50 flex items-center gap-3"
+            className="w-full max-w-md mx-auto bg-gradient-to-br from-gray-800 to-gray-700 rounded-lg p-3 mb-3 cursor-pointer flex items-center gap-4 shadow-md hover:shadow-lg"
             onClick={() => onSelectItem(item)}
           >
             {itemType === 'book' ? (
               <>
                 {item.imageUrl && (
-                  <img src={item.imageUrl} alt={item.title} className="w-12 h-16 object-cover rounded" />
+                  <img src={item.imageUrl} alt={item.title} className="w-14 h-20 object-cover rounded-md" />
                 )}
-                <div>
+                <div className='flex-1 text-gray-100'>
                   <div className="font-medium">{item.title} {item.author && `- ${item.author.authorName}`}</div>
                   <div className="text-sm text-gray-400">{item.category} • {item.price}</div>
                 </div>
               </>
             ) : itemType === 'borrower' ? (
               <>
-                {item.borrowerName} - {item.borrowerEmail}
+                <div className='text-gray-100'>{item.borrowerName} - {item.borrowerEmail}</div>
               </>
             ) : itemType ==='author' ? (
               <>
-                {item.authorName} - {item.authorEmail}
+                <div className='text-gray-100'>{item.authorName} - {item.authorEmail}</div>
               </>
             ) :itemType ==='bookcheckin' ?(
               <>
-                {item.title} - {item.category} - {item.price} -Borrowed by: {item.borrower.borrowerName}
+                <div className='text-gray-100'>{item.title} - {item.category} - {item.price} -Borrowed by: {item.borrower.borrowerName}</div>
               </>): null }
           </div>
         ))}

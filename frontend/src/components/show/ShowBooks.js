@@ -3,80 +3,44 @@ import SearchBar from "../search_comp/SearchBar";
 
 const ShowItemList = ({ items, openItems, toggleItem, type }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-6">
       {items.map((item, index) => (
         <div
           key={item._id}
-          className="bg-gray-700 p-2 rounded-lg mb-2 w-screen max-w-md cursor-pointer text-gray-400 hover:bg-opacity-55"
           onClick={() => toggleItem(index)}
+          className={`mb-3 w-full max-w-md mx-auto rounded-lg transition-shadow ${openItems.includes(index) ? 'shadow-lg' : 'shadow-md hover:shadow-lg'} bg-gradient-to-br from-gray-800 to-gray-700 cursor-pointer`}
         >
-          {(type === "all" || type === "available" )? (
-            <>
-              {openItems.includes(index) ? (
-                <div className="bg-gray-700 p-2 text-left rounded-lg cursor-pointer text-gray-400 hover:bg-opacity-50">
-                  {item.imageUrl && (
-                    <img src={item.imageUrl} alt={item.title} className="mb-2 w-40 h-56 object-cover rounded" />
-                  )}
-                  <p className="text-gray-300">Title: {item.title}</p>
-                  {item.author && (
-                    <>
-                    <p className="text-gray-300">Author: {item.author.authorName}</p>
-                    <p className="text-gray-300">Author Email: {item.author.authorEmail}</p>
-                    </>
-                  )}
-                  <p className="text-gray-300">Category: {item.category}</p>
-                  <p className="text-gray-300">Price: {item.price}</p>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center gap-3">
-                    {item.imageUrl && (
-                      <img src={item.imageUrl} alt={item.title} className="w-12 h-16 object-cover rounded" />
-                    )}
-                    <div>
-                      <div>{item.title} - {item.author && item.author.authorName}</div>
-                      <div className="text-sm text-gray-500">{item.category}</div>
-                    </div>
-                  </div>
-                </>
+          {openItems.includes(index) ? (
+            <div className="p-4 flex flex-col md:flex-row gap-4 text-gray-100">
+              {item.imageUrl && (
+                <img src={item.imageUrl} alt={item.title} className="w-full md:w-40 h-56 object-cover rounded-md" />
               )}
-            </>
-          ) : type ==="borrowed"? (
-            <>
-              {openItems.includes(index) ? (
-                <div className="bg-gray-700 p-2 text-left rounded-lg cursor-pointer text-gray-400 hover:bg-opacity-50">
-                  {item.imageUrl && (
-                    <img src={item.imageUrl} alt={item.title} className="mb-2 w-40 h-56 object-cover rounded" />
-                  )}
-                  <p className="text-gray-300">Title: {item.title}</p>
-                  {item.author && (
-                    <p className="text-gray-300">Author: {item.author.authorName}</p>
-                  )}
-                  <p className="text-gray-300">Category: {item.category}</p>
-                  <p className="text-gray-300">Price: {item.price}</p>
-                  {item.borrower && (
-                    <>
-                      <p className="text-gray-300">Borrower: {item.borrower.borrowerName}</p>
-                      <p className="text-gray-300">Borrower Email: {item.borrower.borrowerEmail}</p>
-                      <p className="text-gray-300">Borrower Phone: {item.borrower.borrowerPhone}</p>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center gap-3">
-                    {item.imageUrl && (
-                      <img src={item.imageUrl} alt={item.title} className="w-12 h-16 object-cover rounded" />
-                    )}
-                    <div>
-                      <div>{item.title} - {item.author && item.author.authorName}</div>
-                      <div className="text-sm text-gray-500">Borrower- {item.borrower && item.borrower.borrowerName}</div>
-                    </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold">{item.title}</h3>
+                {item.author && <p className="text-sm text-gray-300">Author: {item.author.authorName}</p>}
+                {item.author && <p className="text-sm text-gray-400">Email: {item.author.authorEmail}</p>}
+                <p className="mt-2 text-sm text-gray-300">Category: {item.category}</p>
+                <p className="text-sm text-gray-300">Price: {item.price}</p>
+                {item.borrower && (
+                  <div className="mt-3 text-sm text-gray-300">
+                    <p>Borrower: {item.borrower.borrowerName}</p>
+                    <p>Email: {item.borrower.borrowerEmail}</p>
+                    <p>Phone: {item.borrower.borrowerPhone}</p>
                   </div>
-                </>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="p-3 flex items-center gap-3 text-gray-200">
+              {item.imageUrl && (
+                <img src={item.imageUrl} alt={item.title} className="w-14 h-20 object-cover rounded-md" />
               )}
-            </>
-          ):(<></>)}
+              <div>
+                <div className="font-medium">{item.title}</div>
+                <div className="text-sm text-gray-400">{item.author && item.author.authorName} • {item.category}</div>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>

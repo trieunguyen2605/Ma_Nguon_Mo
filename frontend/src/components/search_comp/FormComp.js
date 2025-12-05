@@ -81,17 +81,15 @@ const FormComp = ({ form_data, setConfirm, handler, type, selectedItem }) => {
       </div>
     </form>
   ) : type === "deletebook" ? (
-    <form className="w-screen max-w-md">
-      <div className="bg-gray-700 rounded-lg p-4 mb-2">
+    <form className="w-screen max-w-md mx-auto">
+      <div className="bg-gradient-to-br from-gray-800 to-gray-700 rounded-xl p-6 mb-4 shadow-md ring-1 ring-gray-700">
         {form_data.imageUrl && (
           <div className="mb-4 flex justify-center">
-            <img src={form_data.imageUrl} alt={form_data.title} className="w-32 h-44 object-cover rounded" />
+            <img src={form_data.imageUrl} alt={form_data.title} className="w-40 h-56 object-cover rounded-md shadow-inner border border-gray-700" />
           </div>
         )}
         <div className="mb-4">
-          <label htmlFor="title" className="block">
-            Book Title
-          </label>
+          <label htmlFor="title" className="block text-sm font-semibold text-gray-200">Book Title</label>
           <input
             type="text"
             name="title"
@@ -99,14 +97,12 @@ const FormComp = ({ form_data, setConfirm, handler, type, selectedItem }) => {
             placeholder="Book Title"
             required
             readOnly
-            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
+            className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700 mt-1"
             value={form_data.title}
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="authorName" className="block">
-            Author Name
-          </label>
+          <label htmlFor="authorName" className="block text-sm font-semibold text-gray-200">Author Name</label>
           <input
             type="text"
             name="authorName"
@@ -114,50 +110,44 @@ const FormComp = ({ form_data, setConfirm, handler, type, selectedItem }) => {
             placeholder="Author Name"
             required
             readOnly
-            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
+            className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700 mt-1"
             value={form_data.authorName}
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="category" className="block">
-            Category
-          </label>
+          <label htmlFor="category" className="block text-sm font-semibold text-gray-200">Category</label>
           <input
             type="text"
             name="category"
             id="category"
             placeholder="Category"
-            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
+            className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700 mt-1"
             value={form_data.category}
             readOnly
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="price" className="block">
-            Price
-          </label>
+          <label htmlFor="price" className="block text-sm font-semibold text-gray-200">Price</label>
           <input
             type="number"
             name="price"
             id="price"
             placeholder="Price"
             required
-            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
+            className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700 mt-1"
             value={form_data.price}
             readOnly
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="confirm_delete" className="block">
-            Price
-          </label>
+          <label htmlFor="confirm_delete" className="block text-sm font-semibold text-gray-200">Confirm Delete</label>
           <input
             type="text"
             name="confirm_delete"
             id="confirm_delete"
             placeholder="Type 'delete' to confirm"
             required
-            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full"
+            className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700 mt-1"
             onChange={(e) => setConfirm(e.target.value)}
           />
         </div>
