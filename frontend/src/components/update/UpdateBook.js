@@ -11,7 +11,8 @@ const UpdateBook = () => {
         category: '',
         price: '',
         preAuthorID: '',
-        imageUrl: ''
+        imageUrl: '',
+        description: ''
     });
 
     const [books, setBooks] = useState([]);
@@ -43,7 +44,8 @@ const UpdateBook = () => {
             category: book.category || '', 
             price: book.price ? book.price.toString() : '',
             preAuthorID: authorId || '',
-            imageUrl: book.imageUrl || ''
+            imageUrl: book.imageUrl || '',
+            description: book.description || ''
         });
     };
 
@@ -55,7 +57,8 @@ const UpdateBook = () => {
             category: '',
             price: '',
             preAuthorID: '',
-            imageUrl: ''
+            imageUrl: '',
+            description: ''
         });
         setBooks([]);
         setSelectedBook(null);
@@ -94,7 +97,8 @@ const UpdateBook = () => {
                     category: '',
                     price: '',
                     preAuthorID: '',
-                    imageUrl: ''
+                    imageUrl: '',
+                    description: ''
                 })};
         } catch (error) {
             console.error('Error updating book:', error);
@@ -182,6 +186,18 @@ const UpdateBook = () => {
                                         <img src={formData.imageUrl} alt="Preview" className='w-36 h-48 object-cover rounded-md shadow-inner border border-gray-700' />
                                     </div>
                                 )}
+                            </div>
+                            <div>
+                                <label htmlFor="description" className="block text-sm font-semibold text-gray-200 mb-1">Description</label>
+                                <textarea
+                                    name="description"
+                                    id="description"
+                                    rows={4}
+                                    placeholder="Short description or content of the book"
+                                    className="w-full rounded-md p-3 bg-gray-900 text-gray-100 border border-gray-700"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                />
                             </div>
                         </div>
                     </div>

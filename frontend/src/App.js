@@ -94,7 +94,7 @@ function App() {
           )}
           {activeForm === "totalBorrowers" && <ShowBorrowers type="all"/>}
           {activeForm === "borrowersWithoutBook" && <ShowBorrowers type="withoutbooks"/>}
-          {activeForm === "totalBooks" && <ShowBooks type="all"/>}
+          {activeForm === "totalBooks" && <ShowBooks type="all" large />}
           {activeForm === "chckoutBook" && <ShowBooks type="borrowed"/>}
           {activeForm === "remainingBooks" && <ShowBooks type="available"/>}
           {activeForm === "totalAuthors" && <ShowAuthors/>}
