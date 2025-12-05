@@ -7,12 +7,18 @@ const ItemList = ({ items, onSelectItem, itemType, isVisible }) => {
         {items.map((item) => (
           <div
             key={item._id}
-            className="bg-gray-700 p-2 rounded-lg mb-2 w-screen max-w-22 cursor-pointer text-gray-400 hover:bg-opacity-50"
+            className="bg-gray-700 p-2 rounded-lg mb-2 w-screen max-w-22 cursor-pointer text-gray-400 hover:bg-opacity-50 flex items-center gap-3"
             onClick={() => onSelectItem(item)}
           >
             {itemType === 'book' ? (
               <>
-                {item.title} - {item.author.authorName} - {item.category} - {item.price}
+                {item.imageUrl && (
+                  <img src={item.imageUrl} alt={item.title} className="w-12 h-16 object-cover rounded" />
+                )}
+                <div>
+                  <div className="font-medium">{item.title} {item.author && `- ${item.author.authorName}`}</div>
+                  <div className="text-sm text-gray-400">{item.category} • {item.price}</div>
+                </div>
               </>
             ) : itemType === 'borrower' ? (
               <>

@@ -6,7 +6,7 @@ const Borrower = require("../models/Borrower");
 
 router.post("/", async (req, res) => {
   try {
-    const { title, authorName, category, price } = req.body;
+    const { title, authorName, category, price, imageUrl } = req.body;
 
     let author = await Author.findOne({ authorName });
     if (!author) {
@@ -23,6 +23,7 @@ router.post("/", async (req, res) => {
       author: author._id,
       category,
       price,
+      imageUrl: imageUrl || "",
       borrower: null,
     });
 
@@ -174,7 +175,7 @@ router.get("/search", async (req, res) => {
 
 router.put("/", async (req, res) => {
   try {
-    const { bookId, title, authorName, category, price, preAuthorID } = req.body;
+    const { bookId, title, authorName, category, price, preAuthorID, imageUrl } = req.body;
 
     // Find the previous author using preAuthorID
     const oldAuthor = await Author.findById(preAuthorID);
@@ -205,7 +206,7 @@ router.put("/", async (req, res) => {
     // Update the book with new information and the new author's ID
     const updatedBook = await Book.findByIdAndUpdate(
       bookId,
-      { title, author: newAuthor._id, category, price },
+      { title, author: newAuthor._id, category, price, imageUrl: imageUrl || "" },
       { new: true }
     );
 

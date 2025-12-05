@@ -6,6 +6,7 @@ const AddBook = () => {
     authorName: '',
     category: '',
     price: '',
+    imageUrl: '',
   });
 
 
@@ -38,6 +39,7 @@ const AddBook = () => {
           authorName: '',
           category: '',
           price: '',
+          imageUrl: '',
         });
       } else {
         console.error('Failed to add book:', response.statusText);
@@ -102,6 +104,21 @@ const AddBook = () => {
               value={formData.price}
               onChange={handleChange}
             />
+          </div>
+          <div className='mb-4'>
+            <label htmlFor='imageUrl' className='block'>Image URL</label>
+            <input
+              type='text'
+              name='imageUrl'
+              id='imageUrl'
+              placeholder='https://example.com/image.jpg'
+              className='border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-4 w-full'
+              value={formData.imageUrl}
+              onChange={handleChange}
+            />
+            {formData.imageUrl && (
+              <img src={formData.imageUrl} alt='Preview' className='mt-2 w-32 h-40 object-cover rounded' />
+            )}
           </div>
         </div>
         <button type='submit' className="bg-blue-700 text-white py-4 w-full rounded font-semibold hover:bg-blue-600 focus:ring-4 focus:ring-blue-500">

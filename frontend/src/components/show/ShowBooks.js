@@ -14,6 +14,9 @@ const ShowItemList = ({ items, openItems, toggleItem, type }) => {
             <>
               {openItems.includes(index) ? (
                 <div className="bg-gray-700 p-2 text-left rounded-lg cursor-pointer text-gray-400 hover:bg-opacity-50">
+                  {item.imageUrl && (
+                    <img src={item.imageUrl} alt={item.title} className="mb-2 w-40 h-56 object-cover rounded" />
+                  )}
                   <p className="text-gray-300">Title: {item.title}</p>
                   {item.author && (
                     <>
@@ -26,7 +29,15 @@ const ShowItemList = ({ items, openItems, toggleItem, type }) => {
                 </div>
               ) : (
                 <>
-                  {item.title} - {item.author && item.author.authorName} - {item.category}
+                  <div className="flex items-center gap-3">
+                    {item.imageUrl && (
+                      <img src={item.imageUrl} alt={item.title} className="w-12 h-16 object-cover rounded" />
+                    )}
+                    <div>
+                      <div>{item.title} - {item.author && item.author.authorName}</div>
+                      <div className="text-sm text-gray-500">{item.category}</div>
+                    </div>
+                  </div>
                 </>
               )}
             </>
@@ -34,6 +45,9 @@ const ShowItemList = ({ items, openItems, toggleItem, type }) => {
             <>
               {openItems.includes(index) ? (
                 <div className="bg-gray-700 p-2 text-left rounded-lg cursor-pointer text-gray-400 hover:bg-opacity-50">
+                  {item.imageUrl && (
+                    <img src={item.imageUrl} alt={item.title} className="mb-2 w-40 h-56 object-cover rounded" />
+                  )}
                   <p className="text-gray-300">Title: {item.title}</p>
                   {item.author && (
                     <p className="text-gray-300">Author: {item.author.authorName}</p>
@@ -50,7 +64,15 @@ const ShowItemList = ({ items, openItems, toggleItem, type }) => {
                 </div>
               ) : (
                 <>
-                  {item.title} - {item.author && item.author.authorName} - Borrower- {item.borrower && item.borrower.borrowerName}
+                  <div className="flex items-center gap-3">
+                    {item.imageUrl && (
+                      <img src={item.imageUrl} alt={item.title} className="w-12 h-16 object-cover rounded" />
+                    )}
+                    <div>
+                      <div>{item.title} - {item.author && item.author.authorName}</div>
+                      <div className="text-sm text-gray-500">Borrower- {item.borrower && item.borrower.borrowerName}</div>
+                    </div>
+                  </div>
                 </>
               )}
             </>

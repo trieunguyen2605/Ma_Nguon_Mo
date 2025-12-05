@@ -83,6 +83,11 @@ const FormComp = ({ form_data, setConfirm, handler, type, selectedItem }) => {
   ) : type === "deletebook" ? (
     <form className="w-screen max-w-md">
       <div className="bg-gray-700 rounded-lg p-4 mb-2">
+        {form_data.imageUrl && (
+          <div className="mb-4 flex justify-center">
+            <img src={form_data.imageUrl} alt={form_data.title} className="w-32 h-44 object-cover rounded" />
+          </div>
+        )}
         <div className="mb-4">
           <label htmlFor="title" className="block">
             Book Title

@@ -5,6 +5,7 @@ const bookSchema = new mongoose.Schema({
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author' },
   category: String,
   price: Number,
+  imageUrl: { type: String, default: "" },
   borrower: { type: mongoose.Schema.Types.ObjectId, ref: 'Borrower', default: null },
 });
 
