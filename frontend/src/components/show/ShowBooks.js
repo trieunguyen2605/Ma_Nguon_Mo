@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import SearchBar from "../search_comp/SearchBar";
 
-const ShowItemList = ({ items, openItems, toggleItem, type, large, onOpen }) => {
+const ShowItemList = ({ items, openItems, toggleItem, type, large, onOpen, onDelete }) => {
   return (
     <div className="mb-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -17,18 +17,32 @@ const ShowItemList = ({ items, openItems, toggleItem, type, large, onOpen }) => 
             }}
             role="button"
             tabIndex={0}
-            className={`rounded-lg transition-shadow shadow-md hover:shadow-lg bg-gradient-to-br from-gray-800 to-gray-700 cursor-pointer overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500`}
+            className={`relative rounded-lg transition-shadow shadow-md hover:shadow-lg bg-gradient-to-br from-gray-800 to-gray-700 cursor-pointer overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500`}
           >
             <div className="p-3 flex items-center gap-3 text-gray-200">
               {item.imageUrl && (
                 <img src={item.imageUrl} alt={item.title} className={`${large ? 'w-24 h-32' : 'w-14 h-20'} object-cover rounded-md`} />
               )}
-              <div>
+              <div className="flex-1">
                 <div className="font-medium">{item.title}</div>
-                <div className="text-sm text-gray-400">Author:{item.author && item.author.authorName} 
-                  <br></br>
+                <div className="text-sm text-gray-400">tác giả:{item.author && item.author.authorName} 
+                  <br />
                   Category:{item.category}</div>
               </div>
+
+              {/* xóa từng sản phẩm  */}
+              {type !== 'borrowed' && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete && onDelete(item);
+                  }}
+                  title="Delete book"
+                  className="ml-2 inline-flex items-center px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                >
+                  Xóa
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -65,6 +79,28 @@ const ShowBooks = ({ type, large }) => {
   // Open modal for a selected book
   const openModal = (book) => {
     setSelectedBook(book);
+  };
+
+  // thông báo xóa từng sách 
+  const deleteBook = async (book) => {
+    const ok = window.confirm(`Xóa sách "${book.title}"? Hành động không thể hoàn tác.`);
+    if (!ok) return;
+    try {
+      const resp = await fetch(`${process.env.REACT_APP_API_URI}/api/books`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookId: book._id, authorId: book.author?._id }),
+      });
+      if (!resp.ok) throw new Error('Failed to delete book');
+      // remove from local state
+      setBooks((prev) => prev.filter((b) => b._id !== book._id));
+      setOpenItems([]);
+      if (selectedBook && selectedBook._id === book._id) setSelectedBook(null);
+      alert('Đã xóa sách');
+    } catch (err) {
+      console.error(err);
+      alert('Xóa không thành công. Kiểm tra console.');
+    }
   };
 
   const closeModal = () => setSelectedBook(null);
@@ -141,12 +177,14 @@ const ShowBooks = ({ type, large }) => {
             value={searchQuery}
             className="mb-0"
           />
-          <button
+          {/* <button
             onClick={handleClearSearch}
             className="ml-1 mb-4 px-4 py-2 rounded-full font-bold bg-red-100 text-red-700 hover:bg-red-300 focus:ring-2 focus:ring-red-300"
           >
             X
-          </button>
+          </button> */}
+
+          {/* nút xóa tất cả các sản phẩm  */}
           <button
             onClick={async () => {
               const ok = window.confirm('Xóa toàn bộ sách? Hành động không thể hoàn tác.');
@@ -178,6 +216,7 @@ const ShowBooks = ({ type, large }) => {
             type={type}
             large={large}
             onOpen={openModal}
+            onDelete={deleteBook}
           />
         </div>
       </div>
@@ -192,20 +231,25 @@ const ShowBooks = ({ type, large }) => {
             {selectedBook.imageUrl && (
               <img src={selectedBook.imageUrl} alt={selectedBook.title} className="w-full h-64 object-cover" />
             )}
-            <div className="p-4 text-gray-800 dark:text-gray-200">
-              {selectedBook.author && <p className="text-sm text-gray-600 dark:text-gray-400">Author: {selectedBook.author.authorName}</p>}
-              <p className="text-sm text-gray-600 dark:text-gray-400">Category: {selectedBook.category} • Price: {selectedBook.price}</p>
-              {selectedBook.description && (
-                <div className="mt-3 text-sm text-gray-700 dark:text-gray-200">{selectedBook.description}</div>
-              )}
-              {selectedBook.borrower && (
-                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-                  <p>Borrower: {selectedBook.borrower.borrowerName}</p>
-                  <p>Email: {selectedBook.borrower.borrowerEmail}</p>
-                  <p>Phone: {selectedBook.borrower.borrowerPhone}</p>
+              <div className="p-4 text-gray-800 dark:text-gray-200">
+                <div className="flex justify-center items-start">
+                  <div>
+                    {selectedBook.author && <p className="text-sm text-gray-600 dark:text-gray-400">Author: {selectedBook.author.authorName}</p>}
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Category: {selectedBook.category} • Price: {selectedBook.price}</p>
+                  </div>
                 </div>
-              )}
-            </div>
+
+                {selectedBook.description && (
+                  <div className="mt-3 text-sm text-gray-700 dark:text-gray-200">{selectedBook.description}</div>
+                )}
+                {selectedBook.borrower && (
+                  <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                    <p>Borrower: {selectedBook.borrower.borrowerName}</p>
+                    <p>Email: {selectedBook.borrower.borrowerEmail}</p>
+                    <p>Phone: {selectedBook.borrower.borrowerPhone}</p>
+                  </div>
+                )}
+              </div>
           </div>
         </div>
       )}

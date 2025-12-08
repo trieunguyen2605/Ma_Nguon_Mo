@@ -6,7 +6,7 @@ const Borrower = require("../models/Borrower");
 
 router.post("/", async (req, res) => {
   try {
-    const { title, authorName, category, price, imageUrl } = req.body;
+    const { title, authorName, category, price, imageUrl, description } = req.body;
 
     let author = await Author.findOne({ authorName });
     if (!author) {
@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
       category,
       price,
       imageUrl: imageUrl || "",
+      description: description || "",
       borrower: null,
     });
 
@@ -47,14 +48,23 @@ router.delete("/", async (req, res) => {
     if (!deletedBook) {
       return res.status(404).send("Book not found");
     }
-    const updatedAuthor = await Author.findByIdAndUpdate(
-      authorId,
-      { $pull: { books: deleteBookId } },
-      { new: true }
-    );
+    // Determine author id to update: prefer provided authorId, otherwise use deletedBook.author
+    const authorToUpdate = authorId || deletedBook.author;
+    if (authorToUpdate) {
+      await Author.findByIdAndUpdate(
+        authorToUpdate,
+        { $pull: { books: deleteBookId } },
+        { new: true }
+      );
+    }
 
-    if (!updatedAuthor) {
-      return res.status(404).send("Author not found");
+    // If the deleted book was checked out to a borrower, remove the book from that borrower's books list
+    if (deletedBook.borrower) {
+      try {
+        await Borrower.findByIdAndUpdate(deletedBook.borrower, { $pull: { books: deleteBookId } });
+      } catch (err) {
+        console.error('Error updating borrower after book delete:', err);
+      }
     }
 
     res.status(200).send("Book deleted successfully");
@@ -204,14 +214,33 @@ router.put("/", async (req, res) => {
     }
 
     // Update the book with new information and the new author's ID
+    const { description } = req.body;
+
     const updatedBook = await Book.findByIdAndUpdate(
       bookId,
-      { title, author: newAuthor._id, category, price, imageUrl: imageUrl || "" },
+      { title, author: newAuthor._id, category, price, imageUrl: imageUrl || "", description: description || "" },
       { new: true }
     );
 
     res.status(200).json(updatedBook);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete all books (CAUTION: destructive)
+router.delete("/all", async (req, res) => {
+  try {
+    // Remove all books
+    await Book.deleteMany({});
+
+    // Clear books arrays from authors and borrowers
+    await Author.updateMany({}, { $set: { books: [] } });
+    await Borrower.updateMany({}, { $set: { books: [] } });
+
+    res.status(200).json({ message: "All books deleted" });
+  } catch (error) {
+    console.error("Error deleting all books:", error);
     res.status(500).json({ error: error.message });
   }
 });
