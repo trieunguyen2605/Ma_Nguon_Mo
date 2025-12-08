@@ -3,7 +3,7 @@ import Logo from '../app_logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faBook, faUser, faEdit, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const Header = ({ onAddBookClick, onAddBorrowerClick, onAddAuthorClick, onUpdateBookClick, onUpdateBorrowerClick, onDeleteBookClick, onDeleteBorrowerClick, onUpdateAuthorClick, onCheckinClick, onCheckoutClick, goHome }) => {
+const Header = ({ onAddBookClick, onAddBorrowerClick, onAddAuthorClick, onUpdateBookClick, onUpdateBorrowerClick, onDeleteBookClick, onDeleteBorrowerClick, onDeleteAuthorClick, onUpdateAuthorClick, onCheckinClick, onCheckoutClick, goHome }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUpdateDropdownOpen, setIsUpdateDropdownOpen] = useState(false);
   const [isDeleteDropdownOpen, setIsDeleteDropdownOpen] = useState(false);
@@ -99,6 +99,9 @@ const Header = ({ onAddBookClick, onAddBorrowerClick, onAddAuthorClick, onUpdate
                 </button>
                 <button onClick={onDeleteBorrowerClick} className="block w-full px-2 py-1 text-gray-800 hover:bg-gray-200">
                   <FontAwesomeIcon icon={faTrash} className="mr-2" /> Delete Borrower
+                </button>
+                <button onClick={onDeleteAuthorClick} className="block w-full px-2 py-1 text-gray-800 hover:bg-gray-200">
+                  <FontAwesomeIcon icon={faTrash} className="mr-2" /> Delete Author
                 </button>
               </div>
             </div>

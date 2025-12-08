@@ -223,6 +223,63 @@ const FormComp = ({ form_data, setConfirm, handler, type, selectedItem }) => {
         </div>
       </div>
     </form>
+  ) : type === "deleteauthor" ? (
+    <form onSubmit={(e) => e.preventDefault()} className="w-screen max-w-md">
+      <div className="bg-gray-700 rounded-lg p-4 mt-4">
+        <div className="mb-4" align="left">
+          <label htmlFor="author_name" className="block">
+            Name
+          </label>
+          <input
+            type="text"
+            name="authorName"
+            id="author_name"
+            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-2 w-full"
+            value={form_data.authorName}
+            readOnly
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="author_email" className="block">
+            Email
+          </label>
+          <input
+            type="text"
+            name="authorEmail"
+            id="author_email"
+            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-2 w-full"
+            value={form_data.authorEmail}
+            readOnly
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="author_phone" className="block">
+            Phone
+          </label>
+          <input
+            type="text"
+            name="authorPhone"
+            id="author_phone"
+            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-2 w-full"
+            value={form_data.authorPhone}
+            readOnly
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="confirm_delete" className="block">
+            Confirm Delete
+          </label>
+          <input
+            type="text"
+            name="confirmDelete"
+            id="confirm_delete"
+            placeholder="Type 'delete' to confirm"
+            className="border bg-gray-200 text-gray-500 border-gray-300 rounded-lg p-2 w-full"
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+        </div>
+      </div>
+    </form>
   ) : (
     <p>Invalid form type</p>
   );

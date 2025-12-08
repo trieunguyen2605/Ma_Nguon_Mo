@@ -32,6 +32,7 @@ const UpdateBook = lazy(() => import("./components/update/UpdateBook.js"));
 
 const DeleteBorrower = lazy(() => import("./components/delete/DeleteBorrower.js"));
 const DeleteBook = lazy(() => import("./components/delete/DeleteBook.js"));
+const DeleteAuthor = lazy(() => import("./components/delete/DeleteAuthor.js"));
 
 const ShowBorrowers = lazy(() => import("./components/show/ShowBorrowers.js"));
 const ShowBooks = lazy(() => import("./components/show/ShowBooks.js"));
@@ -63,6 +64,7 @@ function App() {
         onUpdateAuthorClick={() => handleButtonClick("updateAuthor")}
         onDeleteBookClick={() => handleButtonClick("deleteBook")}
         onDeleteBorrowerClick={() => handleButtonClick("deleteBorrower")}
+        onDeleteAuthorClick={() => handleButtonClick("deleteAuthor")}
         onCheckinClick={() => handleButtonClick("checkinBook")}
         onCheckoutClick={() => handleButtonClick("checkoutBook")}
         goHome={handleGoHomeClick}
@@ -80,6 +82,7 @@ function App() {
           {activeForm === "updateBorrower" && <UpdateBorrower />}
           {activeForm === "deleteBorrower" && <DeleteBorrower />}
           {activeForm === "deleteBook" && <DeleteBook />}
+          {activeForm === "deleteAuthor" && <DeleteAuthor />}
           {activeForm === "checkinBook" && <BookCheckin />}
           {activeForm === "checkoutBook" && <BookCheckout />}
           {activeForm === "goToHome" && (
