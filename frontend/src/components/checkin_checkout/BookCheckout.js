@@ -87,7 +87,7 @@ const BookCheckout = () => {
       const bookId = searchedBook._id;
       const borrowerId = searchedBorrower._id;
 
-      fetch(`${process.env.REACT_APP_API_URI}/books/checkout`, {
+      fetch(`${process.env.REACT_APP_API_URI}/api/books/checkout`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

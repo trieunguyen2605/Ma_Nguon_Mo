@@ -1,46 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
 import SearchBar from "../search_comp/SearchBar";
 
-const ShowItemList = ({ items, openItems, toggleItem, type, large }) => {
+const ShowItemList = ({ items, openItems, toggleItem, type, large, onOpen }) => {
   return (
     <div className="mb-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items.map((item, index) => (
           <div
             key={item._id}
-            onClick={() => toggleItem(index)}
-            className={`rounded-lg transition-shadow ${openItems.includes(index) ? 'shadow-lg' : 'shadow-md hover:shadow-lg'} bg-gradient-to-br from-gray-800 to-gray-700 cursor-pointer overflow-hidden`}
+            onClick={() => onOpen && onOpen(item)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onOpen && onOpen(item);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            className={`rounded-lg transition-shadow shadow-md hover:shadow-lg bg-gradient-to-br from-gray-800 to-gray-700 cursor-pointer overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500`}
           >
-            {openItems.includes(index) ? (
-              <div className="p-4 flex flex-col gap-4 text-gray-100 h-full">
-                {item.imageUrl && (
-                  <img src={item.imageUrl} alt={item.title} className={`${large ? 'w-full h-64' : 'w-full h-48'} object-cover rounded-md`} />
-                )}
-                <div>
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                  {item.author && <p className="text-sm text-gray-300">Author: {item.author.authorName}</p>}
-                  <p className="mt-1 text-sm text-gray-300">Category: {item.category}</p>
-                  <p className="text-sm text-gray-300">Price: {item.price}</p>
-                  {item.borrower && (
-                    <div className="mt-2 text-sm text-gray-300">
-                      <p>Borrower: {item.borrower.borrowerName}</p>
-                      <p>Email: {item.borrower.borrowerEmail}</p>
-                      <p>Phone: {item.borrower.borrowerPhone}</p>
-                    </div>
-                  )}
-                </div>
+            <div className="p-3 flex items-center gap-3 text-gray-200">
+              {item.imageUrl && (
+                <img src={item.imageUrl} alt={item.title} className={`${large ? 'w-24 h-32' : 'w-14 h-20'} object-cover rounded-md`} />
+              )}
+              <div>
+                <div className="font-medium">{item.title}</div>
+                <div className="text-sm text-gray-400">Author:{item.author && item.author.authorName} 
+                  <br></br>
+                  Category:{item.category}</div>
               </div>
-            ) : (
-              <div className="p-3 flex items-center gap-3 text-gray-200">
-                {item.imageUrl && (
-                  <img src={item.imageUrl} alt={item.title} className={`${large ? 'w-24 h-32' : 'w-14 h-20'} object-cover rounded-md`} />
-                )}
-                <div>
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-sm text-gray-400">{item.author && item.author.authorName} • {item.category}</div>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         ))}
       </div>
@@ -54,6 +43,7 @@ const ShowBooks = ({ type, large }) => {
   const [books, setBooks] = useState(initialBoooksState);
   const [searchQuery, setSearchQuery] = useState("");
   const [openItems, setOpenItems] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
 
   const toggleItem = (index) => {
     setOpenItems((prevOpenItems) => {
@@ -71,6 +61,22 @@ const ShowBooks = ({ type, large }) => {
       }
     });
   };
+
+  // Open modal for a selected book
+  const openModal = (book) => {
+    setSelectedBook(book);
+  };
+
+  const closeModal = () => setSelectedBook(null);
+
+  // Close modal on Escape
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") closeModal();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const handleSearch = useCallback(
     async (query) => {
@@ -141,6 +147,28 @@ const ShowBooks = ({ type, large }) => {
           >
             X
           </button>
+          <button
+            onClick={async () => {
+              const ok = window.confirm('Xóa toàn bộ sách? Hành động không thể hoàn tác.');
+              if (!ok) return;
+              try {
+                const resp = await fetch(`${process.env.REACT_APP_API_URI}/api/books/all`, { method: 'DELETE' });
+                if (!resp.ok) throw new Error('Failed to delete all books');
+                // clear local state
+                setBooks([]);
+                setOpenItems([]);
+                // close modal if open
+                setSelectedBook(null);
+                alert('Đã xóa toàn bộ sách');
+              } catch (err) {
+                console.error(err);
+                alert('Xóa không thành công. Kiểm tra console.');
+              }
+            }}
+            className="ml-2 mb-4 px-4 py-2 rounded-full font-bold bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+          >
+            Delete All
+          </button>
         </div>
         <div className={`w-full ${large ? 'max-w-6xl mx-auto' : 'max-w-4xl mx-auto'}`}>
           <ShowItemList
@@ -149,9 +177,38 @@ const ShowBooks = ({ type, large }) => {
             toggleItem={toggleItem}
             type={type}
             large={large}
+            onOpen={openModal}
           />
         </div>
       </div>
+      {selectedBook && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={closeModal}></div>
+          <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-3xl w-full mx-4 z-10 overflow-hidden">
+            <div className="p-4 flex justify-between items-start">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{selectedBook.title}</h2>
+              <button onClick={closeModal} className="text-gray-600 dark:text-gray-300 hover:text-gray-800">✕</button>
+            </div>
+            {selectedBook.imageUrl && (
+              <img src={selectedBook.imageUrl} alt={selectedBook.title} className="w-full h-64 object-cover" />
+            )}
+            <div className="p-4 text-gray-800 dark:text-gray-200">
+              {selectedBook.author && <p className="text-sm text-gray-600 dark:text-gray-400">Author: {selectedBook.author.authorName}</p>}
+              <p className="text-sm text-gray-600 dark:text-gray-400">Category: {selectedBook.category} • Price: {selectedBook.price}</p>
+              {selectedBook.description && (
+                <div className="mt-3 text-sm text-gray-700 dark:text-gray-200">{selectedBook.description}</div>
+              )}
+              {selectedBook.borrower && (
+                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                  <p>Borrower: {selectedBook.borrower.borrowerName}</p>
+                  <p>Email: {selectedBook.borrower.borrowerEmail}</p>
+                  <p>Phone: {selectedBook.borrower.borrowerPhone}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

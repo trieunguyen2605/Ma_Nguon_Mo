@@ -77,7 +77,7 @@ const CheckinBook = () => {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URI}/books/checkin`,
+          `${process.env.REACT_APP_API_URI}/api/books/checkin`,
           {
             method: "PUT",
             headers: {
