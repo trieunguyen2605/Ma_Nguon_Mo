@@ -13,6 +13,8 @@ const BookCheckout = () => {
   const [searchedBook, setSearchedBook] = useState(null);
   const [searchedBorrower, setSearchedBorrower] = useState(null);
   const [confirmCheckout, setConfirmCheckout] = useState('');
+  const [borrowDate, setBorrowDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
   const [selectedBook, setSelectedBook] = useState(null);
   const [selectedBorrower, setSelectedBorrower] = useState(null);
   const [showBookList, setShowBookList] = useState(true);
@@ -58,7 +60,21 @@ const BookCheckout = () => {
 
   const handleContinue = () => {
     startTransition(() => {
-    if (searchedBook && searchedBorrower) {
+    // allow either searched* or selected* to be used (defensive)
+    const hasBook = searchedBook || selectedBook;
+    const hasBorrower = searchedBorrower || selectedBorrower;
+    if (hasBook && hasBorrower) {
+      // if searched values are missing but selected exist, populate searched* so downstream matches expectation
+      if (!searchedBook && selectedBook) setSearchedBook(selectedBook);
+      if (!searchedBorrower && selectedBorrower) setSearchedBorrower(selectedBorrower);
+      // populate default borrow/return dates if not already set
+      const today = new Date();
+      const defaultBorrow = today.toISOString().slice(0,10);
+      const defaultReturnDate = new Date(today);
+      defaultReturnDate.setDate(defaultReturnDate.getDate() + 5);
+      const defaultReturn = defaultReturnDate.toISOString().slice(0,10);
+      if (!borrowDate) setBorrowDate(defaultBorrow);
+      if (!returnDate) setReturnDate(defaultReturn);
       setShowSelectedItems(true);
     } else {
       alert('Please select both a book and a borrower.');
@@ -87,12 +103,17 @@ const BookCheckout = () => {
       const bookId = searchedBook._id;
       const borrowerId = searchedBorrower._id;
 
+      // send dates (ISO) if provided
+      const payload = { bookId, borrowerId };
+      if (borrowDate) payload.borrowDate = new Date(borrowDate).toISOString();
+      if (returnDate) payload.returnDate = new Date(returnDate).toISOString();
+
       fetch(`${process.env.REACT_APP_API_URI}/api/books/checkout`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ bookId,borrowerId }),
+        body: JSON.stringify(payload),
       })
         .then((response) => {
           if (response.ok) {
@@ -104,6 +125,8 @@ const BookCheckout = () => {
             setSelectedBook(null);
             setSelectedBorrower(null);
             setShowSelectedItems(false); // Hide selected items
+            setBorrowDate("");
+            setReturnDate("");
           } else {
             throw new Error('Failed to checkout book');
           }
@@ -171,7 +194,7 @@ const BookCheckout = () => {
      
       {showSelectedItems && (
         <>
-        <CheckoutReceipt selectedBook={selectedBook} selectedBorrower={selectedBorrower} />
+          <CheckoutReceipt selectedBook={selectedBook} selectedBorrower={selectedBorrower} borrowDate={borrowDate} returnDate={returnDate} />
         <form onSubmit={(e) => e.preventDefault()} className='w-screen max-w-md'>
           <div className="bg-gray-700 rounded-lg p-4 mt-4">
             <div className="mb-4">
@@ -185,12 +208,22 @@ const BookCheckout = () => {
                 onChange={(e) => setConfirmCheckout(e.target.value)}
               />
             </div>
+              <div className="mb-4 grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm">Borrow Date</label>
+                  <input type="date" className="w-full rounded-md p-2" value={borrowDate} onChange={(e)=>setBorrowDate(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-sm">Return Date</label>
+                  <input type="date" className="w-full rounded-md p-2" value={returnDate} onChange={(e)=>setReturnDate(e.target.value)} />
+                </div>
+              </div>
           </div>
           <div className="mt-4">
             <button
               type="button"
               className="bg-blue-700 text-white py-4 mb-4 w-full rounded font-semibold hover:bg-blue-600 focus:ring-4 focus:ring-blue-500"
-              onClick={handleCheckout}
+                onClick={handleCheckout}
             >
               Checkout
             </button>

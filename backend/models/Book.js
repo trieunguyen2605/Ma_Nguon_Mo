@@ -8,6 +8,8 @@ const bookSchema = new mongoose.Schema({
   imageUrl: { type: String, default: "" },
   description: { type: String, default: "" },
   borrower: { type: mongoose.Schema.Types.ObjectId, ref: 'Borrower', default: null },
+  borrowDate: { type: Date, default: null },
+  returnDate: { type: Date, default: null },
 });
 
 const Book = mongoose.model('Book', bookSchema);

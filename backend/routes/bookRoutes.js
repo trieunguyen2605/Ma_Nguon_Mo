@@ -81,7 +81,7 @@ router.put("/checkin", async (req, res) => {
     // console.log(bookId, borrowerId);
     const updatedBook = await Book.findByIdAndUpdate(
       bookId,
-      { borrower: null },
+      { borrower: null, borrowDate: null, returnDate: null },
       { new: true }
     );
     if (!updatedBook) {
@@ -102,11 +102,25 @@ router.put("/checkin", async (req, res) => {
 
 router.put("/checkout", async (req, res) => {
   try {
-    const { bookId, borrowerId } = req.body;
+    let { bookId, borrowerId, borrowDate, returnDate } = req.body;
+
+    // If borrowDate/returnDate provided by client, parse them; otherwise set defaults (now + 5 days)
+    const now = new Date();
+    if (borrowDate) {
+      borrowDate = new Date(borrowDate);
+    } else {
+      borrowDate = now;
+    }
+    if (returnDate) {
+      returnDate = new Date(returnDate);
+    } else {
+      returnDate = new Date(borrowDate);
+      returnDate.setDate(returnDate.getDate() + 5); // loan period = 5 days
+    }
 
     const updatedBook = await Book.findByIdAndUpdate(
       bookId,
-      { $set: { borrower: borrowerId } },
+      { $set: { borrower: borrowerId, borrowDate, returnDate } },
       { new: true }
     );
 

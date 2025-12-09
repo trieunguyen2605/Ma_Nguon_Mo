@@ -2,7 +2,7 @@ import React from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-const CheckoutReceipt = ({ selectedBook, selectedBorrower }) => {
+const CheckoutReceipt = ({ selectedBook, selectedBorrower, borrowDate, returnDate }) => {
   const handleSaveAsPDF = () => {
     const pdfDoc = new jsPDF();
     
@@ -18,10 +18,12 @@ const CheckoutReceipt = ({ selectedBook, selectedBorrower }) => {
     pdfDoc.setFontSize(12);
     pdfDoc.text('Selected Book Details', 15, 20);
     const bookData = [
-      ['Title', selectedBook.title],
-      ['Author', selectedBook.author.authorName],
-      ['Category', selectedBook.category],
-      ['Price', `${selectedBook.price.toFixed(2)}/-`],
+      ['Title', selectedBook?.title || 'N/A'],
+      ['Author', selectedBook?.author?.authorName || 'Unknown'],
+      ['Category', selectedBook?.category || 'N/A'],
+      ['Price', `${(selectedBook?.price ?? 0).toFixed(2)}/-`],
+      ['Borrow Date', borrowDate ? new Date(borrowDate).toLocaleDateString() : (selectedBook?.borrowDate ? new Date(selectedBook.borrowDate).toLocaleDateString() : 'N/A')],
+      ['Return Date', returnDate ? new Date(returnDate).toLocaleDateString() : (selectedBook?.returnDate ? new Date(selectedBook.returnDate).toLocaleDateString() : 'N/A')],
     ];
     pdfDoc.autoTable({
       startY: 25,
@@ -33,9 +35,9 @@ const CheckoutReceipt = ({ selectedBook, selectedBorrower }) => {
   
     pdfDoc.text('Selected Borrower Details', 15, pdfDoc.autoTable.previous.finalY + 15);
     const borrowerData = [
-      ['Name', selectedBorrower.borrowerName],
-      ['Email', selectedBorrower.borrowerEmail],
-      ['Address', selectedBorrower.borrowerAddress],
+      ['Name', selectedBorrower?.borrowerName || 'N/A'],
+      ['Email', selectedBorrower?.borrowerEmail || 'N/A'],
+      ['Address', selectedBorrower?.borrowerAddress || 'N/A'],
     ];
     pdfDoc.autoTable({
       startY: pdfDoc.autoTable.previous.finalY + 20,
@@ -55,28 +57,36 @@ const CheckoutReceipt = ({ selectedBook, selectedBorrower }) => {
           <h3 className="text-lg font-bold mb-2">Selected Book</h3>
           <p>
             <span className="font-semibold">Title: </span>
-            <span className="font-light">{selectedBook.title}</span>
+            <span className="font-light">{selectedBook?.title || 'N/A'}</span>
           </p>
           <p>
             <span className="font-semibold">Author: </span>
-            <span className="font-light">{selectedBook.author.authorName}</span>
+            <span className="font-light">{selectedBook?.author?.authorName || 'Unknown'}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Borrow Date: </span>
+            <span className="font-light">{borrowDate ? new Date(borrowDate).toLocaleDateString() : (selectedBook?.borrowDate ? new Date(selectedBook.borrowDate).toLocaleDateString() : 'N/A')}</span>
+          </p>
+          <p>
+            <span className="font-semibold">Return Date: </span>
+            <span className="font-light">{returnDate ? new Date(returnDate).toLocaleDateString() : (selectedBook?.returnDate ? new Date(selectedBook.returnDate).toLocaleDateString() : 'N/A')}</span>
           </p>
           <h3 className="text-lg font-bold mt-4 mb-4">Selected Borrower</h3>
           <p className="mt-2 mb-2">
             <span className="font-semibold">Name: </span>
-            <span className="font-light">{selectedBorrower.borrowerName}</span>
+            <span className="font-light">{selectedBorrower?.borrowerName || 'N/A'}</span>
           </p>
           <p className="mt-2 mb-2">
             <span className="font-semibold">Email: </span>
-            <span className="font-light">{selectedBorrower.borrowerEmail}</span>
+            <span className="font-light">{selectedBorrower?.borrowerEmail || 'N/A'}</span>
           </p>
           <p className="mt-2 mb-2">
             <span className="font-semibold">Phone Number: </span>
-            <span className="font-light">{selectedBorrower.borrowerPhone}</span>
+            <span className="font-light">{selectedBorrower?.borrowerPhone || 'N/A'}</span>
           </p>
           <p className="mt-2 mb-4">
             <span className="font-semibold">Address: </span>
-            <span className="font-light">{selectedBorrower.borrowerAddress}</span>
+            <span className="font-light">{selectedBorrower?.borrowerAddress || 'N/A'}</span>
           </p>
           <button
             className="bg-blue-700 text-white py-2 px-4 rounded font-semibold hover:bg-blue-600 focus:ring-4 focus:ring-blue-500"

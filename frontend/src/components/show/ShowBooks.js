@@ -27,7 +27,13 @@ const ShowItemList = ({ items, openItems, toggleItem, type, large, onOpen, onDel
                 <div className="font-medium">{item.title}</div>
                 <div className="text-sm text-gray-400">tác giả:{item.author && item.author.authorName} 
                   <br />
-                  Category:{item.category}</div>
+                  Category:{item.category}
+                  {type === 'borrowed' && item.borrower && (
+                    <div className="text-xs text-yellow-300 mt-1">
+                      Borrowed: {item.borrowDate ? new Date(item.borrowDate).toLocaleDateString() : 'N/A'} • Return: {item.returnDate ? new Date(item.returnDate).toLocaleDateString() : 'N/A'}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* xóa từng sản phẩm  */}
@@ -242,11 +248,13 @@ const ShowBooks = ({ type, large }) => {
                 {selectedBook.description && (
                   <div className="mt-3 text-sm text-gray-700 dark:text-gray-200">{selectedBook.description}</div>
                 )}
-                {selectedBook.borrower && (
+                {type === 'borrowed' && selectedBook.borrower && (
                   <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
                     <p>Borrower: {selectedBook.borrower.borrowerName}</p>
                     <p>Email: {selectedBook.borrower.borrowerEmail}</p>
                     <p>Phone: {selectedBook.borrower.borrowerPhone}</p>
+                    {/* <p className="mt-2">Borrowed on: {selectedBook.borrowDate ? new Date(selectedBook.borrowDate).toLocaleDateString() : 'N/A'}</p>
+                    <p>Return by: {selectedBook.returnDate ? new Date(selectedBook.returnDate).toLocaleDateString() : 'N/A'}</p> */}
                   </div>
                 )}
               </div>

@@ -90,6 +90,28 @@ router.put('/:id', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-  
+
+// Route to delete an author
+router.delete('/:id', async (req, res) => {
+  try {
+    const authorId = req.params.id;
+    
+    // Delete the author
+    const deletedAuthor = await Author.findByIdAndDelete(authorId);
+    if (!deletedAuthor) {
+      return res.status(404).json({ error: 'Author not found' });
+    }
+    
+    // Clear the author reference from all books
+    await Book.updateMany(
+      { author: authorId },
+      { $set: { author: null } }
+    );
+    
+    res.status(200).json({ message: 'Author deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
