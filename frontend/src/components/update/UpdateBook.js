@@ -77,29 +77,60 @@ const UpdateBook = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URI}/api/books`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-            if (response.ok) {
-                alert('Book updated successfully');
-                console.log('Book updated successfully!');
-                setSelectedBook(null);
-                setShowBookList(true);
-                setBooks([]);
-                setFormData({
-                    bookId: '',
-                    title: '',
-                    authorName: '',
-                    category: '',
-                    price: '',
-                    preAuthorID: '',
-                    imageUrl: '',
-                    description: ''
-                })};
+                if (!formData.bookId) {
+                    alert('No book selected to update. Please select a book first.');
+                    return;
+                }
+
+                // Build payload: ensure numeric price and include preAuthorID if missing
+                const payload = { ...formData };
+                // ensure price is a number when possible
+                if (payload.price !== undefined && payload.price !== null && payload.price !== '') {
+                    const parsed = Number(payload.price);
+                    payload.price = Number.isNaN(parsed) ? payload.price : parsed;
+                } else {
+                    delete payload.price; // don't send empty string
+                }
+
+                // ensure preAuthorID exists when we have a selectedBook with an author
+                if ((!payload.preAuthorID || payload.preAuthorID === '') && selectedBook && selectedBook.author && selectedBook.author._id) {
+                    payload.preAuthorID = selectedBook.author._id;
+                }
+
+                console.debug('UpdateBook payload:', payload);
+
+                const response = await fetch(`${process.env.REACT_APP_API_URI}/api/books`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const resultText = await response.text();
+                let result = null;
+                try { result = JSON.parse(resultText); } catch { result = resultText; }
+
+                if (response.ok) {
+                    alert('Book updated successfully');
+                    console.log('Book updated successfully!', result);
+                    setSelectedBook(null);
+                    setShowBookList(true);
+                    setBooks([]);
+                    setFormData({
+                        bookId: '',
+                        title: '',
+                        authorName: '',
+                        category: '',
+                        price: '',
+                        preAuthorID: '',
+                        imageUrl: '',
+                        description: ''
+                    });
+                } else {
+                    console.error('Update failed', response.status, result);
+                    alert(`Update failed: ${response.status} - ${typeof result === 'string' ? result : (result && result.error ? result.error : JSON.stringify(result))}`);
+                }
         } catch (error) {
             console.error('Error updating book:', error);
         }
